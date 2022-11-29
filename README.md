@@ -4,7 +4,9 @@ Many customer come to us with HPA tickets. Public docs on this can be quite conf
 
 Following the public docs on HPA: https://docs.datadoghq.com/containers/cluster_agent/external_metrics/?tab=helm#overview
 
-Your app key is required, either set in the values.yaml or passed in the helm command as such:
+Assuming that your cluster agent is deployed already via Helm.
+
+1. Your app key is required, either set in the values.yaml or passed in the helm command as such:
 ```
 helm upgrade <RELEASE_NAME> -f values.yaml --set datadog.apiKey=<API_KEY> --set datadog.appKey=<APP_KEY> datadog/datadog
 ```
@@ -22,7 +24,7 @@ clusterAgent:
 
 Must use an existing metric in your sandbox. In my case I am using kubernetes.pods.running
 
-An HPA manifest and DatadogMetric manifest needs to be created.
+2. An HPA manifest and DatadogMetric manifest needs to be created.
 
 In the HPA manifest:
 ```
@@ -68,13 +70,27 @@ spec:
   query: avg:kubernetes.pods.running{*}
 ```
 
-After deploying these manifests and waiting for a short moment, run to confirm that they are deployed successfully:
+3. After deploying these manifests and waiting for a short moment, run to confirm that they are deployed successfully:
+
+Run:
 ```
 kubectl get hpa
-kubectl get DatadogMetric
+```
+```
+NAME       REFERENCE        TARGETS             MINPODS   MAXPODS   REPLICAS   AGE
+kubetest   Deployment/hpa   <unknown>/9 (avg)   1         3         0          30m
 ```
 
-Then run a describe on the DatadogMetric:
+Run:
+```
+kubectl get DatadogMetric
+```
+```
+NAME                                                ACTIVE   VALID   VALUE                REFERENCES             UPDATE TIME
+test-metric                                         True     True    1.4615384615384615   hpa:default/kubetest   63s
+```
+
+4. Then run a describe on the DatadogMetric:
 ```
 kubectl describe DatadogMetric test-metric
 ```

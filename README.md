@@ -53,7 +53,9 @@ Following this template:
         targetAverageValue: #required
 ```
 The targetAverageValue is required but for the purposes of the session, this doesn't need to be a specific value.
+
 In metricName set the namespace to default since we are testing this in the default namespace.
+
 In metricName set the datadogmetric_name to match the name set in DatadogMetric manifest as shown below.
 
 In the DatadogMetric manifest:
@@ -102,5 +104,7 @@ Status:
 Events:                    <none>
 ```
 The error status should be false and the rest should be true.
+
 Also Current Value should not be 0.
+
 If the above is satisfied, you have successfully enabled the Custom Metrics Server.

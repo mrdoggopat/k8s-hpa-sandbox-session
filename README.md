@@ -4,8 +4,6 @@ Many customer come to us with HPA tickets. Public docs on this can be quite conf
 
 Following the public docs on HPA: https://docs.datadoghq.com/containers/cluster_agent/external_metrics/?tab=helm#overview
 
-Deep dive on HPA: https://docs.google.com/document/d/1yDamWYBz0-AGk7aqFTTkyFXSCDrgaQ-yWPPut2tktlY/edit
-
 Assuming that your cluster agent is deployed already via Helm.
 
 Your app key is required, either set in the values.yaml or passed in the helm command as such:

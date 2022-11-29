@@ -1,0 +1,6 @@
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMetric
+metadata:
+  name: test-metric
+spec:
+  query: avg:kubernetes.pods.running{*}

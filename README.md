@@ -70,6 +70,8 @@ spec:
   query: avg:kubernetes.pods.running{*}
 ```
 
+Note that the query above was obtained from the metric explorer. Go to the metrics explorer in your sandbox account, type in kubernetes.pods.running and click on </>. 
+
 After deploying these manifests and waiting for a short moment, run to confirm that they are deployed successfully:
 
 Run:

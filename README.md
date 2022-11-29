@@ -6,7 +6,7 @@ Following the public docs on HPA: https://docs.datadoghq.com/containers/cluster_
 
 Assuming that your cluster agent is deployed already via Helm.
 
-1. Your app key is required, either set in the values.yaml or passed in the helm command as such:
+Your app key is required, either set in the values.yaml or passed in the helm command as such:
 ```
 helm upgrade <RELEASE_NAME> -f values.yaml --set datadog.apiKey=<API_KEY> --set datadog.appKey=<APP_KEY> datadog/datadog
 ```
@@ -24,7 +24,7 @@ clusterAgent:
 
 Must use an existing metric in your sandbox. In my case I am using kubernetes.pods.running
 
-2. An HPA manifest and DatadogMetric manifest needs to be created.
+An HPA manifest and DatadogMetric manifest needs to be created.
 
 In the HPA manifest:
 ```
@@ -70,7 +70,7 @@ spec:
   query: avg:kubernetes.pods.running{*}
 ```
 
-3. After deploying these manifests and waiting for a short moment, run to confirm that they are deployed successfully:
+After deploying these manifests and waiting for a short moment, run to confirm that they are deployed successfully:
 
 Run:
 ```
@@ -90,7 +90,7 @@ NAME                                                ACTIVE   VALID   VALUE      
 test-metric                                         True     True    1.4615384615384615   hpa:default/kubetest   63s
 ```
 
-4. Then run a describe on the DatadogMetric:
+Then run a describe on the DatadogMetric:
 ```
 kubectl describe DatadogMetric test-metric
 ```

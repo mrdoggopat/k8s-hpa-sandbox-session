@@ -32,7 +32,7 @@ helm install <RELEASE_NAME> -f values.yaml --set datadog.site='datadoghq.com' --
 
 Your app key is required for this to work, this is either set in the values.yaml file itself or passed in from the helm install command above.
 
-If you haven't configured your app key you can run a helm upgrade as such:
+If you haven't configured your app key but you have done a helm install, you can run a helm upgrade as such:
 ```
 helm upgrade <RELEASE_NAME> -f values.yaml --set datadog.appKey=<APP_KEY> datadog/datadog
 ```

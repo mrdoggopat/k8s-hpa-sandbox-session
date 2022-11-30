@@ -160,7 +160,7 @@ If the above is satisfied, you have successfully enabled the Custom Metrics Serv
 
 # Troubleshooting
 
-If you see the following error:
+Common error:
 ```
 Status:
   Autoscaler References:  hpa:default/kubetest
@@ -185,9 +185,6 @@ Status:
     Type:                  Error
   Current Value:           0
 ```
-This may indicate a 403 error which can signify that perhaps an api key or app key was not configured correctly.
-
-You can verify this with the following commands.
 
 Useful commands for troubleshooting:
 ```

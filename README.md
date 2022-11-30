@@ -4,7 +4,7 @@ Many customers come to us with HPA tickets. Public docs on this can be quite con
 
 Following the public docs on HPA: https://docs.datadoghq.com/containers/cluster_agent/external_metrics/?tab=helm#overview
 
-NOTE THAT IN THIS SESSION, I ASSUME THAT YOU HAVE HELM, K8S, AND MINIKUBE INSTALLED ALREADY.
+Note that in this session, this is in the assumption that you have Helm, K8s, and Minikube installed already.
 
 # Preliminary steps
 

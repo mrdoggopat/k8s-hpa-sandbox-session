@@ -1,17 +1,20 @@
-Patrick's HPA sandbox session.
+<h1>Patrick's HPA sandbox session</h1>
 
-Many customer come to us with HPA tickets. Public docs on this can be quite confusing (trust me I know) which is the reason for this session :D 
+Many customers come to us with HPA tickets. Public docs on this can be quite confusing (trust me I know) which is the reason for this session :D 
 
 Following the public docs on HPA: https://docs.datadoghq.com/containers/cluster_agent/external_metrics/?tab=helm#overview
 
-Assuming that your cluster agent is deployed already via Helm.
+NOTE THAT IN THIS SESSION, I ASSUME THAT YOU HAVE HELM, K8S, AND MINIKUBE INSTALLED ALREADY.
 
-Your app key is required, either set in the values.yaml or passed in the helm command as such:
-```
-helm upgrade <RELEASE_NAME> -f values.yaml --set datadog.apiKey=<API_KEY> --set datadog.appKey=<APP_KEY> datadog/datadog
-```
+# Preliminary steps
 
-Ensure in your helm chart that this is set to enable HPA:
+Please start up docker and run:
+```
+minikube start
+```
+Make sure you have a Helm chart values.yaml to work with, if not you can grab it from: https://github.com/DataDog/helm-charts/blob/main/charts/datadog/values.yaml
+
+Ensure in your helm chart that this is set to enable HPA (which should be by default so you should not need to make any changes):
 ```
 clusterAgent:
   enabled: true
@@ -22,11 +25,40 @@ clusterAgent:
     useDatadogMetrics: true
 ```
 
-Must use an existing metric in your sandbox. In my case I am using kubernetes.pods.running
+After that, if you haven't deployed the cluster agent with your helm chart at all please run:
+```
+helm install <RELEASE_NAME> -f values.yaml --set datadog.site='datadoghq.com' --set datadog.apiKey=<API_KEY> --set datadog.appKey=<APP_KEY> datadog/datadog
+```
+
+Your app key is required for this to work, this is either set in the values.yaml file itself or passed in from the helm install command above.
+
+If you haven't configured your app key you can run a helm upgrade as such:
+```
+helm upgrade <RELEASE_NAME> -f values.yaml --set datadog.appKey=<APP_KEY> datadog/datadog
+```
+
+# Step 1 - Verify and use a sample metric coming from your k8s minikube cluster
+Verify that you are getting metrics from your cluster in your sandbox account. Must use an existing metric in your sandbox. In my case I am using kubernetes.pods.running
 
 An HPA manifest and DatadogMetric manifest needs to be created.
 
-In the HPA manifest:
+# Step 2 - Creating the HPA manifest
+Following this template below according to the docs:
+```
+  metrics:
+    - type: External
+      external:
+        metricName: "datadogmetric@<namespace>:<datadogmetric_name>"
+        targetAverageValue: #required
+```
+
+The targetAverageValue is required but for the purposes of the session, this doesn't need to be a specific value.
+
+In metricName set the namespace to default since we are testing this in the default namespace.
+
+In metricName set the datadogmetric_name to match the name set in DatadogMetric manifest as shown below.
+
+Hence, in the HPA manifest:
 ```
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -46,20 +78,7 @@ spec:
       targetAverageValue: 9
 ```
 
-Following this template:
-```
-  metrics:
-    - type: External
-      external:
-        metricName: "datadogmetric@<namespace>:<datadogmetric_name>"
-        targetAverageValue: #required
-```
-The targetAverageValue is required but for the purposes of the session, this doesn't need to be a specific value.
-
-In metricName set the namespace to default since we are testing this in the default namespace.
-
-In metricName set the datadogmetric_name to match the name set in DatadogMetric manifest as shown below.
-
+# Step 3 - Creating the DatadogMetric manifest
 In the DatadogMetric manifest:
 ```
 apiVersion: datadoghq.com/v1alpha1
@@ -72,12 +91,22 @@ spec:
 
 Note that the query above was obtained from the metric explorer. Go to the metrics explorer in your sandbox account, type in kubernetes.pods.running and click on </>. 
 
-After deploying these manifests and waiting for a short moment, run to confirm that they are deployed successfully:
+# Step 4 - Deploying the two manifests
+Now deploy the two manifests by running:
+```
+kubectl apply -f HPA.yaml
+```
+```
+kubectl apply -f DatadogMetric.yaml
+```
+
+After deploying these manifests, run to confirm that they are deployed successfully:
 
 Run:
 ```
 kubectl get hpa
 ```
+Output you should see:
 ```
 NAME       REFERENCE        TARGETS             MINPODS   MAXPODS   REPLICAS   AGE
 kubetest   Deployment/hpa   <unknown>/9 (avg)   1         3         0          30m
@@ -87,11 +116,13 @@ Run:
 ```
 kubectl get DatadogMetric
 ```
+Output you should see:
 ```
 NAME                                                ACTIVE   VALID   VALUE                REFERENCES             UPDATE TIME
 test-metric                                         True     True    1.4615384615384615   hpa:default/kubetest   63s
 ```
 
+# Step 5 - Verify that it works!
 Then run a describe on the DatadogMetric:
 ```
 kubectl describe DatadogMetric test-metric
@@ -125,4 +156,46 @@ The error status should be false and the rest should be true.
 
 Also Current Value should not be 0.
 
-If the above is satisfied, you have successfully enabled the Custom Metrics Server.
+If the above is satisfied, you have successfully enabled the Custom Metrics Server for HPA!
+
+# Troubleshooting
+
+If you see the following error:
+```
+Status:
+  Autoscaler References:  hpa:default/kubetest
+  Conditions:
+    Last Transition Time:  2022-11-29T21:03:53Z
+    Last Update Time:      2022-11-30T00:46:13Z
+    Status:                True
+    Type:                  Active
+    Last Transition Time:  2022-11-30T00:46:13Z
+    Last Update Time:      2022-11-30T00:46:13Z
+    Status:                False
+    Type:                  Valid
+    Last Transition Time:  2022-11-29T21:03:53Z
+    Last Update Time:      2022-11-30T00:46:13Z
+    Status:                True
+    Type:                  Updated
+    Last Transition Time:  2022-11-30T00:46:13Z
+    Last Update Time:      2022-11-30T00:46:13Z
+    Message:               Invalid metric (from backend), query: avg:kubernetes.pods.running{*}
+    Reason:                Unable to fetch data from Datadog
+    Status:                True
+    Type:                  Error
+  Current Value:           0
+```
+This may indicate a 403 error which can signify that perhaps an api key or app key was not configured correctly.
+
+You can verify this with the following commands.
+
+Useful commands for troubleshooting:
+```
+kubectl get pods
+```
+
+Then run:
+```
+kubectl logs <CLUSTER_AGENT_POD> datadog-cluster-agent
+```
+You should be able to see some agent logs error messages. The command above is very helpful to check if you might have configured something incorrectly.

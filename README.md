@@ -12,9 +12,9 @@ Please start up docker and run:
 ```
 minikube start
 ```
-Make sure you have a Helm chart values.yaml to work with, if not you can grab it from: https://github.com/DataDog/helm-charts/blob/main/charts/datadog/values.yaml
-
 Run kubectl get pods to make sure the minikube cluster is working properly.
+
+Make sure you have a Helm chart values.yaml to work with, if not you can grab it from: https://github.com/DataDog/helm-charts/blob/main/charts/datadog/values.yaml
 
 Ensure in your helm chart that this is set to enable HPA (which should be by default so you should not need to make any changes):
 ```

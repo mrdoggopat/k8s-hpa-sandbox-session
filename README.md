@@ -157,7 +157,7 @@ Events:                    <none>
 ```
 The error status should be false and the rest should be true.
 
-Also Current Value should not be 0.
+Also Current Value should not be 0 (unless the metric query itself is only reporting 0).
 
 If the above is satisfied, you have successfully enabled the Custom Metrics Server for HPA!
 

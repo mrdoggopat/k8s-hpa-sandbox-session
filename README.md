@@ -196,6 +196,6 @@ kubectl get pods
 
 Then run:
 ```
-kubectl logs <CLUSTER_AGENT_POD_NAME> datadog-cluster-agent status
+kubectl logs <CLUSTER_AGENT_POD_NAME> datadog-cluster-agent
 ```
 You should be able to see some agent logs error messages. The command above is very helpful to check if you might have configured something incorrectly.

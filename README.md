@@ -103,7 +103,7 @@ kubectl apply -f HPA.yaml
 kubectl apply -f DatadogMetric.yaml
 ```
 
-After deploying these manifests, run to confirm that they are deployed successfully:
+After deploying these manifests, run the following to confirm that they are deployed successfully:
 
 Run:
 ```

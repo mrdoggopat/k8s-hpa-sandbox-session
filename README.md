@@ -61,7 +61,7 @@ In metricName set the namespace to default since we are testing this in the defa
 
 In metricName set the datadogmetric_name to match the name set in DatadogMetric manifest as shown below.
 
-Hence, in the HPA manifest:
+Create the HPA manifest by naming it HPA.yaml:
 ```
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -82,7 +82,7 @@ spec:
 ```
 
 # Step 3 - Creating the DatadogMetric manifest
-In the DatadogMetric manifest:
+Create the DatadogMetric manifest by naming it datadogmetric.yaml:
 ```
 apiVersion: datadoghq.com/v1alpha1
 kind: DatadogMetric
@@ -100,7 +100,7 @@ Now deploy the two manifests by running:
 kubectl apply -f HPA.yaml
 ```
 ```
-kubectl apply -f DatadogMetric.yaml
+kubectl apply -f datadogmetric.yaml
 ```
 
 After deploying these manifests, run the following to confirm that they are deployed successfully:
@@ -117,7 +117,7 @@ kubetest   Deployment/hpa   <unknown>/9 (avg)   1         3         0          3
 
 Run:
 ```
-kubectl get DatadogMetric
+kubectl get datadogmetric
 ```
 Output you should see:
 ```

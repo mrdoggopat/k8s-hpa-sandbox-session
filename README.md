@@ -46,7 +46,7 @@ Verify that you are getting metrics from your cluster in your sandbox account. M
 An HPA manifest and DatadogMetric manifest needs to be created.
 
 # Step 2 - Creating the HPA manifest
-Following this template below according to the docs:
+Following this template below according to the docs: https://docs.datadoghq.com/containers/cluster_agent/external_metrics/?tab=helm#example-datadogmetric-object
 ```
   metrics:
     - type: External

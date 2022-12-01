@@ -92,7 +92,7 @@ spec:
   query: avg:kubernetes.pods.running{*}
 ```
 
-Note that the query above was obtained from the metric explorer. Go to the metrics explorer in your sandbox account, type in kubernetes.pods.running and click on </>. Then, copypasta the query to the query in the manifest.
+Note that the query above was obtained from the metric explorer. Go to the metrics explorer in your sandbox account, type in kubernetes.pods.running and click on </>. Then, copypasta the query to the manifest.
 
 # Step 4 - Deploying the two manifests
 Now deploy the two manifests by running:

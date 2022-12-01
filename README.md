@@ -14,6 +14,8 @@ minikube start
 ```
 Make sure you have a Helm chart values.yaml to work with, if not you can grab it from: https://github.com/DataDog/helm-charts/blob/main/charts/datadog/values.yaml
 
+Run kubectl get pods to make sure the minikube cluster is working properly.
+
 Ensure in your helm chart that this is set to enable HPA (which should be by default so you should not need to make any changes):
 ```
 clusterAgent:
@@ -25,12 +27,11 @@ clusterAgent:
     useDatadogMetrics: true
 ```
 
-Run kubectl get pods to make sure the minikube cluster is working properly.
-
 After that, if you haven't deployed the cluster agent with your helm chart at all please run:
 ```
 helm install <RELEASE_NAME> -f values.yaml --set datadog.site='datadoghq.com' --set datadog.apiKey=<API_KEY> --set datadog.appKey=<APP_KEY> datadog/datadog
 ```
+Run kubectl get pods again to ensure that you have the necessary cluster and node agent pod in your cluster.
 
 Your app key is required for this to work, this is either set in the values.yaml file itself or passed in from the helm install command above.
 
@@ -38,7 +39,6 @@ If you haven't configured your app key but you have done a helm install, you can
 ```
 helm upgrade <RELEASE_NAME> -f values.yaml --set datadog.appKey=<APP_KEY> datadog/datadog
 ```
-Run kubectl get pods again to ensure that you have the necessary cluster and node agent pod in your cluster.
 
 # Step 1 - Verify and use a sample metric coming from your k8s minikube cluster
 Verify that you are getting metrics from your cluster in your sandbox account. Must use an existing metric in your sandbox. In my case I am using kubernetes.pods.running

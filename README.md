@@ -189,6 +189,15 @@ Status:
   Current Value:           0
 ```
 
+```
+2022-12-02 00:25:09 UTC | CLUSTER | ERROR | (pkg/util/kubernetes/autoscalers/datadogexternal.go:79 in queryDatadogExternal) | Error while executing metric query avg:custom.googleapis.com|rabbitmq_queue_messages|gauge{metric.queue:preprocessor_tasks}.rollup(30),avg:monitoring.googleapis.com|rabbitmq_queue{*}.rollup(30),sum:gcp.prometheus.rabbitmq_queue_messages.gauge{queue:preprocessor_tasks}: API returned error: Error parsing query: 
+unable to parse avg:custom.googleapis.com|rabbitmq_queue_messages|gauge{metric.queue:preprocessor_tasks}.rollup(30),avg:monitoring.googleapis.com|rabbitmq_queue{*}.rollup(30),sum:gcp.prometheus.rabbitmq_queue_messages.gauge{queue:preprocessor_tasks}: Rule 'scope_expr' didn't match at '|rabbitmq_queue_mess' (line 1, column 26).
+```
+If the customer sees the above error, it's also good to check if the customer might have multiple DatadogMetric manifests setup in the same cluster that may have invalid queries. You can have them run:
+```
+kubectl get datadogmetric --all-namespace
+```
+
 Useful commands for troubleshooting:
 ```
 kubectl get pods
